@@ -71,9 +71,6 @@ endif()
 subdirs(src/htd)
 subdirs(src/htd_io)
 subdirs(src/htd_cli)
-subdirs(src/htd_main)
-
-subdirs(test)
 
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates/cmake_uninstall.cmake.in"
