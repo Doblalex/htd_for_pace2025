@@ -133,6 +133,11 @@ struct htd::LibraryInstance::Implementation
      */
     bool terminated_;
 
+	/**
+	 *  Timeout for automatic termination.
+	 */
+	std::chrono::time_point<std::chrono::system_clock> timeout_;
+
     /**
      *  The factory class for the default implementation of the htd::IConnectedComponentAlgorithm interface.
      */
@@ -296,7 +301,15 @@ htd::id_t htd::LibraryInstance::id(void) const
 
 bool htd::LibraryInstance::isTerminated(void) const
 {
-    return implementation_->terminated_;
+	if (implementation_->terminated_) {
+		return true;
+	}
+	if (implementation_->timeout_ != std::chrono::time_point<std::chrono::system_clock>() &&
+		implementation_->timeout_ < std::chrono::system_clock::now()) {
+		implementation_->terminated_ = true;
+		return true;
+	}
+    return false;
 }
 
 void htd::LibraryInstance::terminate(void)
@@ -307,6 +320,17 @@ void htd::LibraryInstance::terminate(void)
 void htd::LibraryInstance::reset(void)
 {
     implementation_->terminated_ = false;
+    implementation_->timeout_ = std::chrono::time_point<std::chrono::system_clock>();
+}
+
+std::chrono::time_point<std::chrono::system_clock> htd::LibraryInstance::getTimeout(void) const
+{
+	return implementation_->timeout_;
+}
+
+void htd::LibraryInstance::setTimeout(std::chrono::time_point<std::chrono::system_clock> to)
+{
+	implementation_->timeout_ = to;
 }
 
 htd::ConnectedComponentAlgorithmFactory & htd::LibraryInstance::connectedComponentAlgorithmFactory(void)

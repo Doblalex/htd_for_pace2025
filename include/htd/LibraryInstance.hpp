@@ -26,7 +26,7 @@
 #define HTD_HTD_LIBRARYINSTANCE_HPP
 
 #include <htd/Id.hpp>
-
+#include <chrono>
 #include <memory>
 
 namespace htd
@@ -230,6 +230,10 @@ namespace htd
              *  was called.
              */
             HTD_API void reset(void);
+
+    		HTD_API std::chrono::time_point<std::chrono::system_clock> getTimeout(void) const;
+
+    		HTD_API void setTimeout(std::chrono::time_point<std::chrono::system_clock>);
 
             /**
              *  Access the factory class for the default implementation of the htd::IConnectedComponentAlgorithm interface.
